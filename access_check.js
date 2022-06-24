@@ -16,9 +16,9 @@
 */
 function access_check(person) {
   if (person.age >= 18){
-    if (person.isAdmin === true) {
+    if (person.isAdmin) {
       return true;
-    } else if (person.true === true && person.blocked === false && person.badUsername === false) {
+    } else if (person.paid && !person.blocked && !person.badUsername) {
       return true;
     } else {
       return false;
@@ -26,3 +26,19 @@ function access_check(person) {
   }
   return false;
 }
+
+function access_check2(person) {
+  return person.age >= 18 ? person.isAdmin ? true : 
+  ((person.paid && !person.blocked && !person.badUsername) ? true : false ) :
+  false;
+}
+
+let men1 = {
+  age: 18,
+  paid: true,
+  blocked: false,
+  badUsername: false,
+  isAdmin: false
+ };
+
+ console.log(access_check(men1));
