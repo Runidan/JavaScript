@@ -30,13 +30,15 @@ const employees = [
   }
 ]
 
-const reduceCallBack = function (acc, item) {
-  return (acc + item.salary) / 2;
+const reduceCallBack = function (sum, item) {
+  return sum + item.salary;
 }
 
-let averSalary = employees.reduce(reduceCallBack, employees[0].salary); //средняя зарплата сотрудников
+let averSalary = employees.reduce(reduceCallBack, 0) / employees.length; //средняя зарплата сотрудников
 
 const sortBySalary = employees.sort(function(a, b) { return a.salary - b.salary; }) //сортировка сотрудников по зарплате
 
 //список сотрудников с зарплатой >4500 и возрастом > 25 лет
 const workerList = employees.filter((worker) => { return worker.salary > 4500 && worker.age > 25})
+
+console.log(averSalary);
