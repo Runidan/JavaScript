@@ -10,7 +10,7 @@ function words_to_array(sentence) {
     let word_obj = {
       word: word,
       length: word.length,
-      isCapitalized: word == word.toUpperCase(),
+      isCapitalized: word == word[0].toUpperCase() + word.slice(1).toLowerCase(),
     }
     result.push(word_obj);
   });
@@ -18,4 +18,4 @@ function words_to_array(sentence) {
   return result;
 }
 
-console.log(words_to_array('sldfk joi lsdk ijj KJHKJ'));
+console.log(words_to_array('sldfk Joi lsdk ijj KJHKJ'));
