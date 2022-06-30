@@ -24,8 +24,7 @@ let human = {
   },
 
   set dateOfBirth(value){
-    // let date = 
-    this.birthday = Date.parse(value);
+    this.birthday = new Date(value);
   },
 
   get age(){
@@ -34,7 +33,8 @@ let human = {
 };
 
 human.fullName = 'Name Surname';
-
 human.dateOfBirth = '1980-05-06';
+
 console.log(human);
 console.log(human.age);
+console.log(human.dateOfBirth);
