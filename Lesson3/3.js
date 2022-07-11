@@ -42,7 +42,7 @@ function Calc() {
     let expr_parts = expression.split(' ');
     let a = Number(expr_parts[0]);
     let b = Number(expr_parts[2]);
-    let f = calculator.operations.get(expr_parts[1]);
+    let f = this.operations.get(expr_parts[1]);
     this.historyBox.push({operation: expr_parts[1], operands: [a, b]});
     return f(a, b); 
   }

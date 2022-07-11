@@ -20,13 +20,14 @@ function TicketOffice() {
   this.cashBox = 0;
 
   this.createEvent = function(concertName, price){
-    this.concerts.set(concertName, price);
+    this.concerts.set(concertName, Number(price));
   }
 
   this.buyTicket = function(concertName){
     if (this.concerts.has(concertName)) {
       this.cashBox += this.concerts.get(concertName);
-      let ticketID = Math.floor(Math.random() * 1000000);
+      let ticketID = 0;
+      do { ticketID = Math.floor(Math.random() * 899999) + 100000 } while (this.salledTicket.has(ticketID));
       this.salledTicket.set(ticketID, concertName);
       return ticketID;
     }
@@ -46,8 +47,10 @@ function TicketOffice() {
 
 // let ticketWindow = new TicketOffice();
 // ticketWindow.createEvent('Concert', 500);
+// console.log(ticketWindow.salledTicket);
+// console.log(ticketWindow.cashBox);
 // let ticket1 = ticketWindow.buyTicket('Concert');
-// console.log(ticketWindow.buyTicket('Concert'));
+// console.log(ticketWindow.salledTicket);
 // console.log(ticketWindow.cashBox);
 
 // ticketWindow.returnTicket(ticket1);
