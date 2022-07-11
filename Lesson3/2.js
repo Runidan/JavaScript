@@ -14,16 +14,25 @@ calculate(2, 10); // { value: 1024, fromCache: false}
 calculate(2, 10); // { value: 1024, fromCache: true}
 */
 
-function cache(x, y){
+function cache(){
   let cacheBox = new Map();
 
   return function (x, y) {
-    if (cacheBox.has(x)) {
-      return {value: cacheBox.get(x), fromCache: true};
+    let key = x + ' ' + y
+    if (cacheBox.has(key)) {
+      return {value: cacheBox.get(key), fromCache: true};
     }
 
-    cacheBox.set(x, Math.pow(x, y));
-    return {value: cacheBox.get(x), fromCache: false};
+    cacheBox.set(key, Math.pow(x, y));
+    return {value: cacheBox.get(key), fromCache: false};
   }
 }
 
+const calculate = cache();
+
+console.log(calculate(3, 3)); // { value: 27, fromCache: false}
+console.log(calculate(2, 10)); // { value: 1024, fromCache: false}
+console.log(calculate(2, 10)); // { value: 1024, fromCache: true}
+console.log(calculate(2, 3));
+console.log(calculate(2, 4));
+console.log(calculate(2, 10));
