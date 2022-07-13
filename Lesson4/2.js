@@ -7,11 +7,11 @@ function Rectangle(size1, size2) {
   this.size1 = size1;
   this.size2 = size2;
 
-  this.getArea = function(){
+  this.getArea = function() {
     return this.size1 * this.size2;
   } 
 
-  this.getPerimetr = function () {
+  this.getPerimetr = function() {
     return ( this.size1 + this.size2 ) * 2;
   }
 }
