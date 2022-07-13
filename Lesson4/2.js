@@ -20,3 +20,7 @@ function Square(size) {
   this.size1 = size;
   this.size2 = size;
 }
+
+Square.prototype = new Rectangle();
+
+// console.log(new Square(2).getArea());
