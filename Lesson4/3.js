@@ -59,4 +59,4 @@ let former_employee = {
   endDate: "10.10.2000",
 }
 
-Object.setPrototypeOf(former_employee, current_employee);
+Object.setPrototypeOf(former_employee, employee);
