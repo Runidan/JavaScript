@@ -89,17 +89,3 @@ function SailShipRope() {
 }
 
 SailShipRope.prototype = new ShipRope();
-
-
-// let rope = new PowerShipRope();
-// console.log(rope);
-// let sh = rope.build_ship(2, 5);
-// console.log(sh);
-// console.log(rope.change_ship(sh, 16, 2));
-// console.log(sh.health);
-// sh.health = 50;
-// console.log(sh);
-// rope.repair_ship(sh);
-// console.log(sh.health);
-// let sh2 = rope.change_ship(sh, 15, 2);
-// console.log(sh2);
