@@ -44,11 +44,6 @@ SailingShip.prototype = new Ship();
 
 function ShipRope(type) {
   this.type = type;
-  // Строить корабли - только своего типа
-  this.build_ship = function(a, b) {
-    let type = this.type === 'power_boat' ? Powerboat : SailingShip;
-    return new type(a, b);
-  }
 
   // Ремонтировать корабли - Должен проверяться тип корабля, работать только с кораблями своего типа
   this.repair_ship = function(ship) {
@@ -62,22 +57,49 @@ function ShipRope(type) {
     ship.color = color;
   }
 
-  // Обменивать старый корабль на новый - Можно обменивать только корабли того же типа
-  this.change_ship = function(ship, a, b) {
-    let type = ship.type === 'power_boat' ? Powerboat : SailingShip;
-    return new type(a, b);
+   // Обменивать старый корабль на новый - Можно обменивать только корабли того же типа
+   this.change_ship = function(ship, a, b) {
+    if (ship.type === this.type){
+      return this.build_ship(a, b);
+    }
   }
 
 
 }
 
-// let rope = new ShipRope('power_boat');
+
+function PowerShipRope() {
+  this.type = 'power_boat';
+
+  this.build_ship = function(a, b) {
+    return new Powerboat(a, b);
+  }
+
+ 
+}
+
+PowerShipRope.prototype = new ShipRope();
+
+function SailShipRope() {
+  this.type = 'sailing_ship';
+
+  this.build_ship = function(a, b) {
+    return new SailingShip(a, b);
+  }
+}
+
+SailShipRope.prototype = new ShipRope();
+
+
+// let rope = new PowerShipRope();
 // console.log(rope);
 // let sh = rope.build_ship(2, 5);
 // console.log(sh);
-// console.log(sh.color);
+// console.log(rope.change_ship(sh, 16, 2));
 // console.log(sh.health);
 // sh.health = 50;
 // console.log(sh);
-// rope.repair_ship(sh)
+// rope.repair_ship(sh);
 // console.log(sh.health);
+// let sh2 = rope.change_ship(sh, 15, 2);
+// console.log(sh2);
