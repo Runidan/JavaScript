@@ -21,71 +21,111 @@
 Верфи и корабли должны создаваться с помощью функций-конструкторов.
 */
 function Ship() {
-  this.color = 'white';
+  this.color = 20;
   this.health = 100;
 }
 
 function Powerboat(power, hull) {
+  Ship.call(this);
   this.power = power;
   this.hull = hull;
-  this.type = 'power_boat';
 }
 
-Powerboat.prototype = new Ship();
+Powerboat.prototype = Object.create(Ship.prototype);
+
+Object.defineProperty(Powerboat.prototype, 'constructor', {
+  value: Powerboat,
+  enumerable: false, 
+  writable: true });
 
 function SailingShip(masts, sailArea) {
+  Ship.call(this)
   this.masts = masts;
   this.sailArea = sailArea;
-  this.type = 'sailing_ship';
-
 }
 
 SailingShip.prototype = new Ship();
 
+Object.defineProperty(SailingShip.prototype, 'constructor', {
+  value: SailingShip,
+  enumerable: false, 
+  writable: true });
+
 function ShipRope(type) {
-  this.type = type;
-
-  // Ремонтировать корабли - Должен проверяться тип корабля, работать только с кораблями своего типа
-  this.repair_ship = function(ship) {
-    if (this.type === ship.type){
-      ship.health = 100;
-    }
-  }
-
+ 
   // Перекрашивать корабли - Можно красить любые корабли
   this.recolor_ship = function(ship, color) {
     ship.color = color;
   }
-
-   // Обменивать старый корабль на новый - Можно обменивать только корабли того же типа
-   this.change_ship = function(ship, a, b) {
-    if (ship.type === this.type){
-      return this.build_ship(a, b);
-    }
-  }
-
-
 }
 
 
 function PowerShipRope() {
-  this.type = 'power_boat';
-
+  // Строить корабли - только своего типа
   this.build_ship = function(a, b) {
     return new Powerboat(a, b);
   }
 
- 
+  // Ремонтировать корабли - Должен проверяться тип корабля, работать только с кораблями своего типа
+  this.repair_ship = function(ship) {
+    if (ship.constructor === Powerboat){
+      console.log('Восстанавливаем здоровье');
+      ship.health = 100;
+    }
+  }
+
+    // Обменивать старый корабль на новый - Можно обменивать только корабли того же типа
+    this.change_ship = function(ship, a, b) {
+    if (ship.constructor === Powerboat){
+      return this.build_ship(a, b);
+    }
+  }
 }
 
 PowerShipRope.prototype = new ShipRope();
 
-function SailShipRope() {
-  this.type = 'sailing_ship';
+Object.defineProperty(PowerShipRope.prototype, 'constructor', {
+  value: PowerShipRope,
+  enumerable: false, 
+  writable: true });
 
+function SailShipRope() {
+
+  // Строить корабли - только своего типа
   this.build_ship = function(a, b) {
     return new SailingShip(a, b);
+  }
+
+  // Ремонтировать корабли - Должен проверяться тип корабля, работать только с кораблями своего типа
+  this.repair_ship = function(ship) {
+    if (sh.constructor === SailingShip){
+      ship.health = 100;
+    }
+  }
+
+  // Обменивать старый корабль на новый - Можно обменивать только корабли того же типа
+  this.change_ship = function(ship, a, b) {
+    if (ship.constructor === SailingShip){
+      return this.build_ship(a, b);
+    }
   }
 }
 
 SailShipRope.prototype = new ShipRope();
+
+Object.defineProperty(SailShipRope.prototype, 'constructor', {
+  value: SailShipRope,
+  enumerable: false, 
+  writable: true });
+
+let sh = new Powerboat(7, 3);
+console.log('color: ' + sh.color);
+console.log('здоровье ' + sh.health);
+let rope = new PowerShipRope();
+sh.health = 50;
+console.log('здоровье ' + sh.health);
+rope.repair_ship(sh);
+console.log('здоровье ' + sh.health);
+console.log('color: ' + sh.color);
+rope.recolor_ship(sh, 'green');
+console.log('color: ' + sh.color);
