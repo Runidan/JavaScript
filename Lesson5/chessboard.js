@@ -26,6 +26,4 @@ class ChessBoard {
       this.board.set(cell, piece);
     }
   }
-
-
 }

@@ -57,4 +57,3 @@ class Pawn extends Peice {
 
   static peice_for_change = [Castle, Knight, Bishop, Queen]
 }
-
