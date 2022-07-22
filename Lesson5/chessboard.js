@@ -5,8 +5,9 @@
 class ChessBoard {
   constructor() {
     this.board = Map();
+    const letters = 'abcdefgh'.split('');
     for(let i = 1; i < 9; i++) {
-      let a = 'abcdefgh'.split('').forEach(letter => {
+      letters.forEach(letter => {
         this.board.set(letter + i, null);
       });
     }
