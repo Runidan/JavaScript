@@ -24,6 +24,7 @@ class Game{
     //проверям что между peice.place и target клетки свободны (кроме коня)
     //если на клетке target фигура переносим в this.deleted_piece
     //меняем знаячения в this.chessboard.board и в peice.place
+    //если piece пешка и находиться на последней линии, запускаем метод по обмену.
     //меняем  this.move_white на противоположное
     //увеличивам this.count_move
     //добавляем ход в this.history_move
