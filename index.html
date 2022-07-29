@@ -6,9 +6,37 @@
   <meta content="dark light" name="color-scheme">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Test Document</title>
+  
 </head>
 <body>
   Содержание
-  
+  <div id="item1">
+    <h3 data-field="title">Some title</h3>
+    <p data-field="description">description</p>
+  </div>
+
+  <script>
+    function parseTemplate(parse, object){
+      let arr = parse.children;
+      for(let node of arr){
+        if(node.matches('[data-field]')){
+          
+          let atr = node.getAttribute('data-field');
+          if(!object[atr]) throw Error("Ошибка!");
+          node.textContent = object[atr];
+          
+        }
+      }
+
+    }
+
+    parseTemplate(
+      document.getElementById('item1'),
+      {
+        title: 'Hello world',
+        description: 'The first program',
+      }
+    );
+  </script>
 </body>
 </html>
