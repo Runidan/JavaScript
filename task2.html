@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="dark light" name="color-scheme">
+  <title>Task 2</title>
+</head>
+<body>
+  <p>
+
+  </p>
+
+  <script>
+    const nestedList = ["Item", ["Item2", ["Item3", 'Item4'], 'Item5']];
+
+    function makeList(node, array) {
+      const ul_base = document.createElement('ul');
+      const li_base = document.createElement('li');
+
+      let ul = ul_base.cloneNode();
+      array.forEach(element => {
+        if(element instanceof Array){
+          makeList(ul, element);
+          return;
+        }
+        else{
+          const li = li_base.cloneNode();
+          li.textContent = element;
+          ul.append(li);
+        }
+
+
+        
+      });
+      node.append(ul);
+  
+    }
+    let node = document.querySelector('p');
+    makeList(node, nestedList);
+  </script>
+</body>
+</html>
