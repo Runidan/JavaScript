@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+    .display {
+      min-width: 100px;
+      min-height: 20px;
+      border: solid 1px black;
+    }
+
+    .button {
+      width: 20%;
+      padding: 20px;
+      border: solid 1px black;
+      display: inline-table;
+      text-align: center;
+    }
+  </style>
+    <div class="display"></div>
+    <div class="buttons">
+      <div class="button">1</div>
+      <div class="button">2</div>
+      <div class="button">3</div>
+      <div class="button">4</div>
+      <div class="button">5</div>
+      <div class="button">6</div>
+      <div class="button">7</div>
+      <div class="button">8</div>
+      <div class="button">9</div>
+      <div class="button">0</div>
+      <div class="button">+</div>
+      <div class="button">=</div>
+    </div>
+
+  <script>
+    const display = document.querySelector('.display');
+    const buttons = document.querySelectorAll('.button');
+
+    const showEvent = (event) => {
+      console.log(event);
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', showEvent)
+    })
+  </script>
+</body>
+</html>
