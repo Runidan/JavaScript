@@ -8,46 +8,174 @@
 </head>
 <body>
   <style>
-    .display {
-      min-width: 100px;
-      min-height: 20px;
-      border: solid 1px black;
-    }
-
     .button {
-      width: 20%;
-      padding: 20px;
-      border: solid 1px black;
-      display: inline-table;
-      text-align: center;
-    }
+    display: inline-table;
+    text-align: center;
+    height: 40px;
+    background-color: #efeeee;
+    width: 18%;
+    padding-top: 15px;
+}
+
+.display {
+    width: 95%;
+    height: 30px;
+    border: 1px solid #000000;
+}
+
+.calc {
+    margin-top: 100px;
+    margin-left: 25%;
+    width: 300px;
+}
+
+.row {
+    margin-top: 3px;
+    float: none;
+}
   </style>
-    <div class="display"></div>
-    <div class="buttons">
-      <div class="button">1</div>
-      <div class="button">2</div>
-      <div class="button">3</div>
-      <div class="button">4</div>
-      <div class="button">5</div>
-      <div class="button">6</div>
-      <div class="button">7</div>
-      <div class="button">8</div>
-      <div class="button">9</div>
-      <div class="button">0</div>
-      <div class="button">+</div>
-      <div class="button">=</div>
-    </div>
+    <div class="calc">
+      <div class="display"></div>
+      <div class="buttons">
+          <div class="row">
+              <div class="button">1</div>
+              <div class="button">2</div>
+              <div class="button">3</div>
+              <div class="button">4</div>
+              <div class="button">*</div>
+          </div>
+          <div>
+              <div class="button">5</div>
+              <div class="button">6</div>
+              <div class="button">7</div>
+              <div class="button">8</div>
+              <div class="button">/</div>
+          </div>
+          <div>
+              <div class="button">9</div>
+              <div class="button">0</div>
+              <div class="button">-</div>
+              <div class="button">+</div>
+              <div class="button">=</div>
+          </div>
+      </div>
+  </div>
 
   <script>
     const display = document.querySelector('.display');
     const buttons = document.querySelectorAll('.button');
 
-    const showEvent = (event) => {
-      console.log(event);
+    let currentOperand = null;
+    let previousOperand = null;
+    let currentOperation = null;
+
+    const performAction = () => {
+
+      let result;
+      switch (currentOperation) {
+        case "+":
+          result = +currentOperand + +previousOperand;
+          break;
+
+        case "-":
+          result = +previousOperand - +currentOperand;
+          break;
+
+        case "*":
+          result = +previousOperand * +currentOperand;
+          break;
+      
+        case "/":
+          result = +previousOperand / +currentOperand;
+          break;
+        default:
+          break;
+      }
+
+      currentOperand = result;
+      display.innerHTML = currentOperand;
+      currentOperation = null;
+      previousOperand = null;
+    }
+
+    const performInputOperation = (keyValue) => {
+      switch (keyValue) {
+        case "c":
+          currentOperand = null;
+          previousOperand = null;
+          currentOperation = null;
+          display.innerHTML = ""
+          break;
+        
+        case "-":
+          previousOperand = currentOperand;
+          currentOperand = null;
+          currentOperation = keyValue;
+          display.innerHTML = "";
+          break;
+
+        case "+":
+          previousOperand = currentOperand;
+          currentOperand = null;
+          currentOperation = keyValue;
+          display.innerHTML = "";
+          break;
+
+        case "*":
+          previousOperand = currentOperand;
+          currentOperand = null;
+          currentOperation = keyValue;
+          display.innerHTML = "";
+          break;
+
+        case "/":
+          previousOperand = currentOperand;
+          currentOperand = null;
+          currentOperation = keyValue;
+          display.innerHTML = "";
+          break;
+        
+        case "=":
+            performAction();
+          break;
+
+        case "Enter":
+            performAction();
+          break;
+
+        case "Backspace":
+        currentOperand = 
+            currentOperand === null ? null : currentOperand.slice(0, -1);
+          display.textContent = currentOperand;
+          break;
+      
+        default:
+          if(Number.isInteger(+keyValue)) {
+            currentOperand = 
+            currentOperand === null ? keyValue : currentOperand + keyValue;
+            display.textContent = currentOperand;
+            break;
+          }
+          console.log('Incorrect input: ' + keyValue);
+          
+      }
+    }
+
+    const handleButtonItraction = (event) => {
+      const buttonValue = event.target.textContent;
+
+      performInputOperation(buttonValue);
     }
 
     buttons.forEach(button => {
-      button.addEventListener('click', showEvent)
+      button.addEventListener('click', handleButtonItraction)
+    })
+
+    document.addEventListener('keydown', (event) => {
+      console.log(event.key);
+      const keyValue = event.key;
+      performInputOperation(keyValue);
+      
     })
   </script>
 </body>
