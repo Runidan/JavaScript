@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="dark light" name="color-scheme">
   <title>Document</title>
 </head>
 <body>
@@ -69,29 +70,22 @@
     let previousOperand = null;
     let currentOperation = null;
 
+    let operations = {
+      "+": function(a, b){return +a + +b},
+      "-": function(a, b){return +a - +b},
+      "*": function(a, b){return +a * +b},
+      "/": function(a, b){return +a / +b}
+    }
+
+    function addOperator(operator, func){
+      operations[operator] = () => {return func};
+    }
+
     const performAction = () => {
-
-      let result;
-      switch (currentOperation) {
-        case "+":
-          result = +currentOperand + +previousOperand;
-          break;
-
-        case "-":
-          result = +previousOperand - +currentOperand;
-          break;
-
-        case "*":
-          result = +previousOperand * +currentOperand;
-          break;
+      let fOperation = operations[currentOperation];
+      console.log(fOperation);
+      let result = fOperation(+previousOperand, +currentOperand);
       
-        case "/":
-          result = +previousOperand / +currentOperand;
-          break;
-        default:
-          break;
-      }
-
       currentOperand = result;
       display.innerHTML = currentOperand;
       currentOperation = null;
@@ -144,7 +138,7 @@
           break;
 
         case "Backspace":
-        currentOperand = 
+          currentOperand = 
             currentOperand === null ? null : currentOperand.slice(0, -1);
           display.textContent = currentOperand;
           break;
@@ -152,7 +146,7 @@
         default:
           if(Number.isInteger(+keyValue)) {
             currentOperand = 
-            currentOperand === null ? keyValue : currentOperand + keyValue;
+              currentOperand === null ? keyValue : currentOperand + keyValue;
             display.textContent = currentOperand;
             break;
           }
