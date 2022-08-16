@@ -32,6 +32,14 @@ class CustomPromise {
     }
   }
 
+  static resolve(value) {
+    return new CustomPromise((resolve, reject) => resolve(value))
+  }
+
+  static reject(error) {
+    return new CustomPromise((resolve, reject) => reject(error))
+  }
+
   then(onFulfilled, onRejected) {
     return new CustomPromise((resolve, reject) => {
       if (this.state === PENDING) {
@@ -169,3 +177,10 @@ class CustomPromise {
 //     setTimeout(() => {resolve(value + "new promise")}, 3000)
 //   })
 // }).then((value) => {console.log(11, value)});
+
+// 10. Можно создать уже выполненный промис с помощью CustomPromise.resolve/reject
+// const promResolved = CustomPromise.resolve('111');
+// console.log(promResolved);
+
+// const promRejected = CustomPromise.reject('error');
+// console.log(promRejected);
