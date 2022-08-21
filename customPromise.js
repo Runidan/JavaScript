@@ -98,3 +98,9 @@ class MyPromise {
 // const pr = Promise.resolve(fetch(url)).then(response => response.json()).then(console.debug);
 // console.log(pr);
 
+// // Выполнение с thenable объектом
+// var p1 = MyPromise.resolve({
+//   then: function(onFulfill, onReject) { onFulfill("fulfilled!"); }
+// });
+// console.log(p1 instanceof MyPromise) // true
+
