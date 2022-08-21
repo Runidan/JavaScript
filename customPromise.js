@@ -1,186 +1,100 @@
-const FULFILLED = 'fulfilled';
-const PENDING = 'pending';
-const REJECTED = 'rejected';
+class MyPromise {
+  resolvedData;
+  rejectedData;
+  resolveChain = [];
+  rejectChain = [];
+  isResolved = false;
+  isRejected = false;
 
-class CustomPromise {
+  static resolve(value) {
+    return new MyPromise((resolve) => resolve(value));
+  }
+
+  static reject(value) {
+    return new MyPromise((_resolve, reject) => reject(value));
+  }
+
   constructor(executor) {
-    this.state = PENDING;
-    this.result = undefined;
-    this.onFulfilledFn = [];
-    this.onRejectedFn = [];
-
     const resolve = (value) => {
-      if (this.state === PENDING) {
-        this.state = FULFILLED;
-        this.result = value;
-        this.onFulfilledFn.forEach((fn) => fn(value));
+      this.resolvedData = value;
+      this.isResolved = true;
+
+      if (this.resolveChain.length) {
+        this.resolveChain.reduce((acc, fn) => fn(acc), this.resolvedData);
+      }
+
+    };
+
+    const reject = (value) => {
+      this.rejectedData = value;
+      this.isRejected = true;
+
+      if (this.rejectChain.length) {
+        this.rejectChain.reduce((acc, fn) => fn(acc), this.rejectedData);
       }
     };
 
-    const reject = (error) => {
-      if (this.state === PENDING) {
-        this.state = REJECTED;
-        this.result = error;
-        this.onRejectedFn.forEach((fn) => fn(error));
-      }
+
+    executor(resolve, reject);
+  }
+
+
+
+  then(fn) {
+    this.resolveChain.push(fn);
+    if (this.isResolved) {
+      this.resolveChain.reduce((acc, fn) => fn(acc), this.resolvedData);
+    }
+    return this;
+  }
+
+  catch(fn) {
+    this.rejectChain.push(fn);
+    if (this.isRejected) {
+      this.rejectChain.reduce((acc, fn) => fn(acc), this.rejectedData);
+    }
+    return this;
+  }
+
+  finally(fn) {
+    this.resolveChain.push(fn);
+    this.rejectChain.push(fn);
+
+    if (this.isResolved) {
+      this.resolveChain.reduce((acc, fn) => fn(acc), this.resolvedData);
     }
 
-    try {
-      executor(resolve, reject);
-    } catch (error) {
-      reject(error);
+    if (this.isRejected) {
+      this.rejectChain.reduce((acc, fn) => fn(acc), this.rejectedData);
     }
-  }
-
-  static resolve(value) {
-    return new CustomPromise((resolve, reject) => resolve(value))
-  }
-
-  static reject(error) {
-    return new CustomPromise((resolve, reject) => reject(error))
-  }
-
-  then(onFulfilled, onRejected) {
-    return new CustomPromise((resolve, reject) => {
-      if (this.state === PENDING) {
-        if (onFulfilled) {
-          this.onFulfilledFn.push(() => {
-            try {
-              const newResult = onFulfilled(this.result);
-              if (newResult instanceof CustomPromise) {
-                newResult.then(resolve, reject);
-              } else {
-                resolve(newResult);
-              }
-            } catch (error) {
-              reject(error)
-            }
-          });
-        }
-        if (onRejected) {
-          this.onRejectedFn.push(() => {
-            try {
-              const newResult = onRejected(this.result);
-              if (newResult instanceof CustomPromise) {
-                newResult.then(resolve, reject);
-              } else {
-                resolve(newResult);
-              }
-            } catch (error) {
-              reject(error)
-            }
-          });
-        }
-        return;
-      }
-
-      if (undefined && this.state === FULFILLED) {
-        try {
-          const newResult = onFulfilled(this.result);
-          if (newResult instanceof CustomPromise) {
-            newResult.then(resolve, reject);
-          } else {
-            resolve(newResult);
-          }
-        } catch (error) {
-          reject(error)
-        }
-        return;
-      }
-
-      if (onRejected && this.state === REJECTED) {
-        try {
-          const newResult = onRejected(this.result);
-          if (newResult instanceof CustomPromise) {
-            newResult.then(resolve, reject);
-          } else {
-            resolve(newResult);
-          }
-        } catch (error) {
-          reject(error)
-        }
-        return;
-      }
-    })
-  }
-
-  catch(onRejected) {
-    return this.then(null, onRejected);
   }
 }
 
-// 1. Конструктор на вход которого переходит executor в свойствах которого две функции
-//  для успеха и ошибки, которые можно выполнить и изменить состояние
-// const promise = new CustomPromise((resolve, reject) => {
-
-//   reject('success');
-// });
-
-// console.log(promise);
-
-// 2. Используется для отложенного кода
-// const promise = new CustomPromise((resolve, reject) => {
-
-//   setTimeout(() => {resolve('success');
-//   console.log(promise)
-//   }, 2000)
-// });
-
-// console.log(promise);
-
-// 3. Состояние resolve, reject можно вызвать только один раз
-
-// 4. Что бы перехватить значение используется метод then   
-// const promise = new CustomPromise((resolve, reject) => { 
-//   setTimeout(() => resolve('success'), 
-//   3000)});
-//   console.log(promise);
-//   promise.then((value) => {console.log(value)});  
-
-// 5. Что бы перехватить ошибку, можно использовать метод then
-// const promise = new CustomPromise((resolve, reject) => {
-//   setTimeout(() => reject(new Error('error')),
-//     3000)
-// });
-// console.log(promise);
-// promise.then((value) => { console.log(value) }, (error) => {
-//   console.log(11, error);
-// });  
-
-// 6. Можно вызывать then сколько угодно раз на одном промисе
-// const promise = new CustomPromise((resolve, reject) => {
-//   setTimeout(() => { resolve('succes') }, 1000)
-// });
-// promise.then((value) => console.log(value));
-// promise.then((value) => console.log(value));
-// promise.then((value) => console.log(value));
-// promise.then((value) => console.log(value));
-
-// 8. Можно использовать цепочки промисов
-// const promise = new CustomPromise((resolve, reject) => {
+// const prom = new MyPromise((resolve, reject) => {
 //   setTimeout(() => {
-//     resolve('success ')
+//     resolve(10);
 //   }, 1000);
-// });
-// promise.then((value) => {return value + ' first then!'})
-//         .then((value) => {return value + ' second then!'})
-//         .then((value) => {console.log(value)})
-
-//9. Можно возвращать в then новый промис и в then мы получим результат успеха
-// const promise = new CustomPromise((resolve, reject) => {
-//   setTimeout(() => {
-//     resolve('success ')
-//   }, 1000);
-// });
-// promise.then((value) => {
-//   return new CustomPromise((resolve, reject) => {
-//     setTimeout(() => {resolve(value + "new promise")}, 3000)
+// })
+//   .then((data) => {
+//     new MyPromise((resolve, reject) => {
+//       setTimeout(() => {
+//         reject('What she said');
+//       }, 1000);
 //   })
-// }).then((value) => {console.log(11, value)});
+//   .catch((error) => {
+//     return `${error} ${data} times`;
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
+//   });
 
-// 10. Можно создать уже выполненный промис с помощью CustomPromise.resolve/reject
-// const promResolved = CustomPromise.resolve('111');
-// console.log(promResolved);
+//   MyPromise.resolve(10).then((data) => console.log(data));
+//   MyPromise.reject('something wrong').catch((error) => console.log(error));
 
-// const promRejected = CustomPromise.reject('error');
-// console.log(promRejected);
+// import fetch from 'node-fetch';
+// const url = 'https://api.ipify.org?format=json'
+
+// const pr = Promise.resolve(fetch(url)).then(response => response.json()).then(console.debug);
+// console.log(pr);
+
