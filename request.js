@@ -10,64 +10,71 @@
 // Можно использовать fetch или XHR
 // Решение должно использовать промисы или async/await
 // Реализуйте простой кэш на стороне клиента. Он будет проверять есть ли у нас результат для введенного запроса и возвращать его из кэша, время жизни для записей ограничивать не нужно
+let search_form = document.getElementById("search_form");
+let result_list = document.getElementById("result");
+var timer;
+let cashe = {};
 
 
 const API_KEY = "aa6M7y2JUoOHhg4bgdhIaorAQBBkAIx6";
 
-const getGifUrl = q => {
-  return `https://api.giphy.com/v1/gifs/trending?api_key=${API_KEY}&g=${q}`
+
+const getGifUrl = (q) => {
+  return `https://api.giphy.com/v1/gifs/trending?g=${q}&api_key=${API_KEY}`
 }
 
 const apiCall = (url) => {
 
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
-  request.addEventListener('load', (e) => {
-    const response = e.target;
+    request.addEventListener('load', (e) => {
+      const response = e.target;
 
-    if (response.status === 200) {
-      try {
-        const parsedResult = JSON.parse(response.response)
-        resolve(parsedResult);
-      } catch(e) {
-        reject(e);
-      }
+      if (response.status === 200) {
+        try {
+          const parsedResult = JSON.parse(response.response)
+          resolve(parsedResult);
+        } catch(e) {
+          reject(e);
+        }
 
-    } else {
-      reject(
-        new Error(
-          `Finish with error ${response.status} ${response.statusText}`
+      } else {
+        reject(
+          new Error(
+            `Finish with error ${response.status} ${response.statusText}`
+          )
         )
-      )
-    }
-  })
+      }
+    })
 
-  request.open('get', url);
+    request.open('get', url);
 
-  request.send();
+    request.send();
   }) 
 }
 
+const getResult = () => {
 
-apiCall(getGifUrl('cat')).then(gifs => {
-  console.log(gifs);
-})
+  if (timer) {
+    clearTimeout(timer);
+  }
 
-// getGifsList('cat').then(
-//   gift => {
-//     console.log(gifs, "respnse received")
-//   }
-// );
+  timer = setTimeout(() => {
+    let url = getGifUrl(search_form.value);
 
-// getGifsList('dog', (msg) => {
-//   console.log(msg);
-// });
+    apiCall(url)
+    .then((result) => {
+      result_list.innerHTML = '';
+      result.data.forEach(element => {
+        let div = document.createElement('span');
+        let image = document.createElement('img');
+        image.src = element.images.fixed_width_downsampled.url;
+        div.append(image);
+        result_list.append(div);
+      });
+    })
+    .catch((e) => reject(e));
+  }, 500);
+}
 
-// import fetch from 'node-fetch';
-// fetch(getGifUrl('dog')).then(
-//   gifs => {
-//     return gifs.json();
-// })
-// .then((gifs) => {
-//   console.log(gifs, 'respons received')
-// });
+search_form.addEventListener('input', getResult);
