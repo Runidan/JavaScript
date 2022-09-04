@@ -4,12 +4,12 @@
 // Запрос на бэкенд отправляется не чаще, чем раз в 500мс
 // Верстка может быть любой
 
-
 // Технические требования :
 // Функция для поиска переиспользуемая, ее должно быть легко использовать в другом месте
 // Можно использовать fetch или XHR
 // Решение должно использовать промисы или async/await
 // Реализуйте простой кэш на стороне клиента. Он будет проверять есть ли у нас результат для введенного запроса и возвращать его из кэша, время жизни для записей ограничивать не нужно
+
 let search_form = document.getElementById("search_form");
 let result_list = document.getElementById("result");
 var timer;
@@ -53,6 +53,17 @@ const apiCall = (url) => {
   }) 
 }
 
+const renderResult = (result) => {
+  result_list.innerHTML = '';
+  result.data.forEach(element => {
+    let div = document.createElement('span');
+    let image = document.createElement('img');
+    image.src = element.images.fixed_width_downsampled.url;
+    div.append(image);
+    result_list.append(div);
+  });
+}
+
 const getResult = () => {
 
   if (timer) {
@@ -62,18 +73,20 @@ const getResult = () => {
   timer = setTimeout(() => {
     let url = getGifUrl(search_form.value);
 
+    if(cashe[url]) {
+      renderResult(cashe[url]);
+      console.log(cashe[url]);
+      return;
+    }
+
     apiCall(url)
     .then((result) => {
-      result_list.innerHTML = '';
-      result.data.forEach(element => {
-        let div = document.createElement('span');
-        let image = document.createElement('img');
-        image.src = element.images.fixed_width_downsampled.url;
-        div.append(image);
-        result_list.append(div);
-      });
+      renderResult(result);
+      return result;
     })
-    .catch((e) => reject(e));
+    .then((result) => {
+      cashe[url] = result;
+    });
   }, 500);
 }
 
