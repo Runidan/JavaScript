@@ -79,14 +79,7 @@ const getResult = () => {
       return;
     }
 
-    apiCall(url)
-    .then((result) => {
-      renderResult(result);
-      return result;
-    })
-    .then((result) => {
-      cashe[url] = result;
-    });
+    apiCall(url).then(result => renderResult(cashe[search_form.value] = result));
   }, 500);
 }
 
