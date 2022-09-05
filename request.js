@@ -23,44 +23,24 @@ const getGifUrl = (q) => {
   return `https://api.giphy.com/v1/gifs/trending?g=${q}&api_key=${API_KEY}`
 }
 
-const apiCall = (url) => {
+const apiCall = async url => {
 
-  return new Promise((resolve, reject) => {
-    const request = new XMLHttpRequest();
-    request.addEventListener('load', (e) => {
-      const response = e.target;
+  const response = await fetch(url);
 
-      if (response.status === 200) {
-        try {
-          const parsedResult = JSON.parse(response.response)
-          resolve(parsedResult);
-        } catch(e) {
-          reject(e);
-        }
+  if (!response.ok) throw `Finish with error ${response.status} ${response.statusText}`;
 
-      } else {
-        reject(
-          new Error(
-            `Finish with error ${response.status} ${response.statusText}`
-          )
-        )
-      }
-    })
+  return await response.json();
 
-    request.open('get', url);
-
-    request.send();
-  }) 
 }
 
 const renderResult = (result) => {
   result_list.innerHTML = '';
   result.data.forEach(element => {
-    let div = document.createElement('span');
+    let span = document.createElement('span');
     let image = document.createElement('img');
     image.src = element.images.fixed_width_downsampled.url;
-    div.append(image);
-    result_list.append(div);
+    span.append(image);
+    result_list.append(span);
   });
 }
 
@@ -74,8 +54,7 @@ const getResult = () => {
     let url = getGifUrl(search_form.value);
 
     if(cashe[search_form.value]) {
-      renderResult(cashe[url]);
-      console.log(cashe[url]);
+      renderResult(cashe[search_form.value]);
       return;
     }
 
