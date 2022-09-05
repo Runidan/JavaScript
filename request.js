@@ -73,7 +73,7 @@ const getResult = () => {
   timer = setTimeout(() => {
     let url = getGifUrl(search_form.value);
 
-    if(cashe[url]) {
+    if(cashe[search_form.value]) {
       renderResult(cashe[url]);
       console.log(cashe[url]);
       return;
