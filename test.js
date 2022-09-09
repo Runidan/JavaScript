@@ -138,4 +138,37 @@ describe('Тест функции MoneyBox', function () {
 });
 
 // Калькулятор
+describe('Тест Calc', function () {
+  let calculator = new Calc();
+
+  it('Можно создать объект', function() {
+    assert.isObject(calculator);
+  });
+
+  it('Тест оператора +', function() {
+    assert.equal(calculator.operation('31 + 32'), 63);
+  });
+
+  it('Тест оператора *', function() {
+    assert.equal(calculator.operation('10 * 2'), 20);
+  });
+
+  it('Тест возможности добавления операторов', function() {
+    calculator.addOperation('/', (a, b) => a / b);
+    assert.equal(calculator.operation('10 / 2'), 5);
+  });
+
+  it('Отображение истории операции', function() {
+    assert.isArray(calculator.history());
+    assert.deepEqual(calculator.history(), [{operation: '+', operands: [31,32]}, {operation: '*', 
+    operands: [10,2]}, {operation: '/', operands: [10,2]}]);
+  });
+
+  it('Возможность очистки истории', function() {
+    calculator.clearHistory();
+    assert.deepEqual(calculator.history(), []);
+  });
+
+});
+
 // Система продажи билетов
