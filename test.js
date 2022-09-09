@@ -172,3 +172,30 @@ describe('Тест Calc', function () {
 });
 
 // Система продажи билетов
+describe('Тест TicketOffice', function () {
+  let ticketWindow = new TicketOffice();
+
+  it('Можно создать объект', function() {
+    assert.isObject(ticketWindow);
+  });
+
+  it('Тест создания концерта', function() {
+    ticketWindow.createEvent("Name", 500);
+    assert.equal(ticketWindow.concerts.get("Name"), 500);
+  });
+
+  let tickerID = null;
+  it('Тест покупки билета', function() {
+    assert.equal(ticketWindow.cashBox, 0);
+    tickerID = ticketWindow.buyTicket("Name");
+    assert.match(tickerID, /\d{6}/);
+    assert.equal(ticketWindow.cashBox, 500);
+  });
+
+  it('Тест возврата билета', function() {
+    assert.equal(ticketWindow.cashBox, 500);
+    ticketWindow.returnTicket(tickerID);
+    assert.equal(ticketWindow.cashBox, 0);
+  });
+
+});
